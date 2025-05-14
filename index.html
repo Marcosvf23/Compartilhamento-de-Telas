@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet"/>
+    <title>App Comercial JS | Prototipo</title>   
+</head>
+<body>
+    <h1>Compartilhamento de Telas</h1>
+    <button id="startSharing">Compartilhar Tela</button>
+    <video muted id="screenVideoShare" autoplay playsinline></video>
+    <script>
+        const startSharing = document.getElementById('startSharing');
+        const videoScreen = document.getElementById('screenVideoShare');
+
+        let mediaRecorder;
+        let recorderChunks = [];
+
+        startSharing.addEventListener('click', async () => {
+            try{
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video:{
+                        cursor:'always'
+                    },
+                    audio:false
+                });
+
+                const audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio:true
+                });
+                 
+                const combinedStreams = new MediaStream([
+                    ...screenStream.getVideoTracks(),
+                    ...audioStream.getAudioTracks()
+                ]);
+
+                videoScreen.srcObject = combinedStreams;
+
+            }catch(error){
+                console.log("o seguinte erro ocorreu: "+error);
+            };
+        });
+
+
+    </script>
+</body>
+</html>
